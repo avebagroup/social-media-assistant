@@ -411,81 +411,50 @@
     </div>
 
  <script>
-    // Load brand knowledge base
-    let brandKnowledge = null;
-
-    // Load knowledge base when page loads
-    async function loadBrandKnowledge() {
-        try {
-            const response = await fetch('./brand-knowledge.json');
-            brandKnowledge = await response.json();
-            console.log('Brand knowledge loaded successfully');
-        } catch (error) {
-            console.error('Failed to load brand knowledge:', error);
-        }
-    }
-
-    function switchTab(brand) {
-        document.querySelectorAll('.tab-content').forEach(content => {
-            content.classList.remove('active');
-        });
-        
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.classList.remove('active');
-        });
-        
-        document.getElementById(brand).classList.add('active');
-        event.target.classList.add('active');
-    }
-
     async function generateContent(event, brand) {
         event.preventDefault();
-        
+
         const platform = document.getElementById(`${brand}-platform`).value;
-        let pillarOrAngle;
-        
-        // Handle different field names properly
-        if (brand === 'aveba') {
-            const pillarField = document.getElementById('aveba-pillar');
-            if (!pillarField) {
-                console.error('Aveba pillar field not found');
-                return;
-            }
-            pillarOrAngle = pillarField.value;
-        } else if (brand === 'maxiemizer') {
-            const angleField = document.getElementById('maxiemizer-angle');
-            if (!angleField) {
-                console.error('Maxiemizer angle field not found');
-                return;
-            }
-            pillarOrAngle = angleField.value;
-        }
-
-        if (!pillarOrAngle) {
-            alert('Please select a content pillar/angle');
-            return;
-        }
-
         const topic = document.getElementById(`${brand}-topic`).value;
         const additional = document.getElementById(`${brand}-additional`).value;
-        
-        if (!topic.trim()) {
-            alert('Please enter a topic');
+        let pillarOrAngle;
+
+        if (brand === 'aveba') {
+            pillarOrAngle = document.getElementById('aveba-pillar').value;
+        } else if (brand === 'maxiemizer') {
+            pillarOrAngle = document.getElementById('maxiemizer-angle').value;
+        }
+
+        if (!pillarOrAngle || !platform || !topic) {
+            alert("Please fill in all required fields.");
             return;
         }
 
-        // Show loading state
         const generateBtn = event.target.querySelector('button[type="submit"]') || event.target;
         const originalText = generateBtn.textContent;
         generateBtn.textContent = 'Creating your content...';
         generateBtn.disabled = true;
-        
+
         try {
-            const content = createBrandContent(brand, platform, pillarOrAngle, topic, additional);
-            
-            document.getElementById(`${brand}-content`).textContent = content;
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    brand,
+                    platform,
+                    pillar: pillarOrAngle,
+                    topic,
+                    additional
+                })
+            });
+
+            if (!response.ok) throw new Error('AI request failed');
+
+            const data = await response.json();
+            document.getElementById(`${brand}-content`).textContent = data.content;
             document.getElementById(`${brand}-output`).style.display = 'block';
-            
         } catch (error) {
             console.error('Error:', error);
             document.getElementById(`${brand}-content`).textContent = 
@@ -497,190 +466,17 @@
         }
     }
 
-    function createBrandContent(brand, platform, pillarOrAngle, topic, additional) {
-        if (brand === 'aveba') {
-            return createAvebaContent(platform, pillarOrAngle, topic, additional);
-        } else {
-            return createMaxiemizerContent(platform, pillarOrAngle, topic, additional);
-        }
-    }
+    function switchTab(brand) {
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
 
-    function createAvebaContent(platform, pillar, topic, additional) {
-        const platformHeader = getPlatformHeader(platform, 'AVEBA');
-        
-        let content = `${platformHeader}\n`;
-        content += `PILLAR: ${pillar.toUpperCase()}\n`;
-        content += `TOPIC: ${topic}\n\n`;
-        
-        // Create Filipino-coded, relatable content
-        switch(pillar) {
-            case 'resonance':
-                content += createAvebaResonance(topic);
-                break;
-            case 'recognition':
-                content += createAvebaRecognition(topic);
-                break;
-            case 'realignment':
-                content += createAvebaRealignment(topic);
-                break;
-            case 'rebellion':
-                content += createAvebaRebellion(topic);
-                break;
-            case 'readiness':
-                content += createAvebaReadiness(topic);
-                break;
-            default:
-                content += createGenericAveba(topic);
-        }
-        
-        if (platform.includes('instagram') || platform === 'tiktok') {
-            content += `\n\nHASHTAGS:\n#AvebaDigital #CreativeOps #BoldBrands #SystemsDesign`;
-        }
-        
-        if (additional) {
-            content += `\n\nNOTE: ${additional}`;
-        }
-        
-        return content;
-    }
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
 
-    function createAvebaResonance(topic) {
-        const openers = [
-            "You ever notice how",
-            "Let me guess",
-            "Anyone else tired of",
-            "Still doing this manually?"
-        ];
-        
-        const relatable = [
-            "Copy-pasting the same reply for the 5th time?",
-            "Manually reminding clients for the 3rd time?",
-            "Your system isn't system-ing.",
-            "You didn't sign up for this."
-        ];
-        
-        const connection = [
-            "We've all been there.",
-            "You're not just 'bad at systems.'",
-            "You've just outgrown the way you've been operating.",
-            "But we're not judging. We've been there."
-        ];
-        
-        const closer = [
-            "Aveba Digital = systems with flavor.",
-            "We clean up the chaos so your business stops feeling like a never-ending to-do list.",
-            "All the stuff that makes your brain say 'ugh' - we live for it."
-        ];
-        
-        const opener = openers[Math.floor(Math.random() * openers.length)];
-        const relate = relatable[Math.floor(Math.random() * relatable.length)];
-        const connect = connection[Math.floor(Math.random() * connection.length)];
-        const close = closer[Math.floor(Math.random() * closer.length)];
-        
-        return `${opener} ${topic.toLowerCase()}?\n\n${relate}\n\n${connect}\n\n${close}`;
-    }
-
-    function createAvebaRecognition(topic) {
-        return `Meet the team behind the magic.\n\nWe're the ones who look at ${topic.toLowerCase()} and say "Let me handle it."\n\nFunnels. Emails. Systems. Automation.\nAll the stuff that makes your brain say 'ugh' - we live for it.\n\nA clean system doesn't look flashy.\nIt looks like clients getting their emails on time.\nDMs answered even while you're asleep.\nFewer missed leads, more closed deals.\n\nAveba Digital = systems with flavor.`;
-    }
-
-    function createAvebaRealignment(topic) {
-        return `You're not tired because you hate your job.\nYou're tired because every task feels like a repeat.\n\n${topic}.\nRewriting the same reply.\nManually reminding clients for the 3rd time.\n\nYou didn't sign up for this.\nAnd no, you're not just "bad at systems."\nYou've just outgrown the way you've been operating.\n\nWorking late doesn't mean you're working smart.\nBurnout isn't proof of success.\nAnd doing it all manually isn't noble - it's just exhausting.`;
-    }
-
-    function createAvebaRebellion(topic) {
-        return `You don't need to run your business like it's still 2012.\n\nYou don't need to manually ${topic.toLowerCase()}.\nYou don't need to copy-paste the same onboarding steps.\nYou don't need to babysit your pipeline.\n\nThere's a better way to do this.\nAnd it doesn't start with hiring more people.\nIt starts with building smarter systems.\n\nAveba Digital = systems with flavor.\nBecause business operations should work for you, not against you.`;
-    }
-
-    function createAvebaReadiness(topic) {
-        return `You've carried your business with so much heart.\nYou've shown up on hard days.\nYou've figured things out when no one else could.\n\nBut just because you can do everything...\nDoesn't mean you have to.\n\nReady to stop ${topic.toLowerCase()} manually?\n\nSlide into our DMs with 'READY'\n\nYou deserve to lead from overflow - not survival mode.`;
-    }
-
-    function createMaxiemizerContent(platform, angle, topic, additional) {
-        const platformHeader = getPlatformHeader(platform, 'MAXIEMIZER');
-        
-        let content = `${platformHeader}\n`;
-        content += `ANGLE: ${angle.toUpperCase()}\n`;
-        content += `TOPIC: ${topic}\n\n`;
-        
-        switch(angle) {
-            case 'problem':
-                content += createMaxiemizerProblem(topic);
-                break;
-            case 'solution':
-                content += createMaxiemizerSolution(topic);
-                break;
-            case 'benefits':
-                content += createMaxiemizerBenefits(topic);
-                break;
-            case 'social-proof':
-                content += createMaxiemizerProof(topic);
-                break;
-            case 'behind-scenes':
-                content += createMaxiemizerBTS(topic);
-                break;
-            case 'education':
-                content += createMaxiemizerEducation(topic);
-                break;
-            default:
-                content += createGenericMaxiemizer(topic);
-        }
-        
-        if (platform.includes('instagram') || platform === 'tiktok') {
-            content += `\n\nHASHTAGS:\n#Maxiemizer #SmartWork #ArchitectPhilippines #BuilderLife #ClientManagement`;
-        }
-        
-        if (additional) {
-            content += `\n\nNOTE: ${additional}`;
-        }
-        
-        return content;
-    }
-
-    function createMaxiemizerProblem(topic) {
-        return `You're not lazy. You're unsupported.\n\nYou're not behind because you lack discipline.\nYou're behind because you're doing too much manually.\n\n${topic} is just one example.\n\nThe truth is - most service providers are not disorganized.\nThey're just tired of remembering everything on their own.\n\nMaxiemizer gives your business the structure it's been faking.`;
-    }
-
-    function createMaxiemizerSolution(topic) {
-        return `What if ${topic.toLowerCase()} happened automatically?\n\nMaxiemizer was built for that gap.\n\nThe system that follows through even when you're offline.\nAutomated follow-ups that feel personal.\nProposals that send themselves.\nPayments that process without you.\n\nThe goal isn't just automation.\nThe goal is support that feels effortless.`;
-    }
-
-    function createMaxiemizerBenefits(topic) {
-        return `After Maxiemizer:\n\nNo more ${topic.toLowerCase()}\nNo more lost leads\nNo more manual follow-ups\nNo more "Did I send that?"\n\nYour business runs smoother.\nYour clients feel supported.\nYou finally have time to focus on the work you love.\n\nYou don't need more willpower.\nYou need a system that works.`;
-    }
-
-    function createMaxiemizerProof(topic) {
-        return `Case study: How one team solved ${topic.toLowerCase()}\n\nBefore Maxiemizer:\nManual everything\nLost leads\nConstant follow-up stress\n\nAfter Maxiemizer:\nAutomated systems\nBetter client experience\nMore time for actual work\n\nResults speak louder than features.\n\nJoin the waitlist if you're tired of carrying the backend alone.`;
-    }
-
-    function createMaxiemizerBTS(topic) {
-        return `Behind the scenes: How we handle ${topic.toLowerCase()}\n\nA clean system doesn't look flashy.\nIt looks like:\nClients getting their emails on time\nDMs answered even while you're asleep\nFewer missed leads, more closed deals\n\nYou won't always see the system working.\nBut you'll feel it in your schedule.\nYour energy.\nYour confidence.`;
-    }
-
-    function createMaxiemizerEducation(topic) {
-        return `Best practices for ${topic.toLowerCase()}:\n\nYou didn't start this to become your own assistant.\nYou're not supposed to be the system.\n\nBut just because you can do everything...\nDoesn't mean you have to.\n\nLet Maxiemizer hold the parts that wear you down.\nYou're not asking for too much.\nYou're just doing too much by yourself.`;
-    }
-
-    function getPlatformHeader(platform, brand) {
-        const headers = {
-            'instagram-post': `INSTAGRAM POST - ${brand}`,
-            'instagram-carousel': `INSTAGRAM CAROUSEL - ${brand}`,
-            'instagram-reel': `INSTAGRAM REEL SCRIPT - ${brand}`,
-            'instagram-story': `INSTAGRAM STORY - ${brand}`,
-            'tiktok': `TIKTOK SCRIPT - ${brand}`,
-            'linkedin': `LINKEDIN POST - ${brand}`,
-            'email': `EMAIL CONTENT - ${brand}`,
-            'blog': `BLOG POST - ${brand}`
-        };
-        return headers[platform] || `SOCIAL MEDIA POST - ${brand}`;
-    }
-
-    function createGenericAveba(topic) {
-        return `${topic} giving you headaches?\n\nWe've been there.\n\nAll the stuff that makes your brain say 'ugh' - we live for it.\n\nAveba Digital = systems with flavor.`;
-    }
-
-    function createGenericMaxiemizer(topic) {
-        return `Most businesses struggle with ${topic.toLowerCase()} because they're doing it manually.\n\nMaxiemizer automates the process so you can focus on what matters.\n\nSupport that feels effortless.`;
+        document.getElementById(brand).classList.add('active');
+        event.target.classList.add('active');
     }
 
     function copyToClipboard(elementId) {
@@ -697,7 +493,6 @@
         });
     }
 
-    // Auto-save and load form data
     function saveFormData(brand) {
         const formData = {
             platform: document.getElementById(`${brand}-platform`).value,
@@ -706,7 +501,6 @@
             topic: document.getElementById(`${brand}-topic`).value,
             additional: document.getElementById(`${brand}-additional`).value
         };
-        
         localStorage.setItem(`${brand}-form-data`, JSON.stringify(formData));
     }
 
@@ -714,7 +508,6 @@
         const saved = localStorage.getItem(`${brand}-form-data`);
         if (saved) {
             const formData = JSON.parse(saved);
-            
             if (formData.platform) 
                 document.getElementById(`${brand}-platform`).value = formData.platform;
             if (formData.pillar && document.getElementById(`${brand}-pillar`)) 
@@ -728,12 +521,10 @@
         }
     }
 
-    // Initialize when page loads
     window.addEventListener('load', function() {
-        loadBrandKnowledge();
         loadFormData('aveba');
         loadFormData('maxiemizer');
-        
+
         ['aveba', 'maxiemizer'].forEach(brand => {
             const inputs = document.querySelectorAll(`#${brand} input, #${brand} select, #${brand} textarea`);
             inputs.forEach(input => {
