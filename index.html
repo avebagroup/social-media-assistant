@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Marketing Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            background: white;
+            border-bottom-color: #667eea;
+            color: #667eea;
+        }
+
+        .tab:hover {
+            background: #e9ecef;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .form-group select,
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        .output-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 2px dashed #dee2e6;
+        }
+
+        .output-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            min-height: 100px;
+            border: 1px solid #e9ecef;
+        }
+
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        .copy-btn:hover {
+            background: #218838;
+        }
+
+        .brand-info {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+        }
+
+        .brand-info h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .brand-info p {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .pillars {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .pillar {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+
+        .pillar h4 {
+            color: #495057;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .pillar p {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Social Media Marketing Assistant</h1>
+            <p>Create platform-specific content with your brand voice</p>
+        </div>
+
+        <div class="main-content">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('aveba')">Aveba</div>
+                <div class="tab" onclick="switchTab('maxiemizer')">Maxiemizer</div>
+            </div>
+
+            <!-- Aveba Tab -->
+            <div id="aveba" class="tab-content active">
+                <div class="brand-info">
+                    <h3>Aveba Brand Voice</h3>
+                    <p><strong>Tone:</strong> Chill but pro. Direct, warm, strategic. Bestie vibes but knows what she's doing.</p>
+                    <p><strong>Target:</strong> Business owners who want to stay hands-on but not burned out</p>
+                    
+                    <div class="pillars">
+                        <div class="pillar">
+                            <h4>1. Resonance</h4>
+                            <p>Relatable content that connects</p>
+                        </div>
+                        <div class="pillar">
+                            <h4>2. Recognition</h4>
+                            <p>Show expertise and results</p>
+                        </div>
+                        <div class="pillar">
+                            <h4>3. Realignment</h4>
+                            <p>Shift mindsets and perspectives</p>
+                        </div>
+                        <div class="pillar">
+                            <h4>4. Rebellion</h4>
+                            <p>Against boring corporate vibes</p>
+                        </div>
+                        <div class="pillar">
+                            <h4>5. Readiness</h4>
+                            <p>Call to action for ready clients</p>
+                        </div>
+                    </div>
+                </div>
+
+                <form onsubmit="generateContent(event, 'aveba')">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="aveba-platform">Platform</label>
+                            <select id="aveba-platform" required>
+                                <option value="">Select Platform</option>
+                                <option value="instagram-post">Instagram Post</option>
+                                <option value="instagram-carousel">Instagram Carousel</option>
+                                <option value="instagram-reel">Instagram Reel</option>
+                                <option value="instagram-story">Instagram Story</option>
+                                <option value="tiktok">TikTok</option>
+                                <option value="linkedin">LinkedIn</option>
+                                <option value="email">Email</option>
+                                <option value="blog">Blog Post</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="aveba-pillar">Content Pillar</label>
+                            <select id="aveba-pillar" required>
+                                <option value="">Select Pillar</option>
+                                <option value="resonance">Resonance - Connect & Relate</option>
+                                <option value="recognition">Recognition - Show Expertise</option>
+                                <option value="realignment">Realignment - Shift Mindset</option>
+                                <option value="rebellion">Rebellion - Anti-Corporate</option>
+                                <option value="readiness">Readiness - Call to Action</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="aveba-topic">Content Topic/Angle</label>
+                        <input type="text" id="aveba-topic" placeholder="e.g., Manual follow-ups vs automated systems" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="aveba-additional">Additional Context (Optional)</label>
+                        <textarea id="aveba-additional" placeholder="Any specific points you want to include, target audience details, or special requirements..."></textarea>
+                    </div>
+
+                    <button type="submit" class="generate-btn">Generate Aveba Content</button>
+                </form>
+
+                <div id="aveba-output" class="output-section" style="display:none;">
+                    <h3>Generated Content:</h3>
+                    <div id="aveba-content" class="output-content"></div>
+                    <button onclick="copyToClipboard('aveba-content')" class="copy-btn">Copy to Clipboard</button>
+                </div>
+            </div>
+
+            <!-- Maxiemizer Tab -->
+            <div id="maxiemizer" class="tab-content">
+                <div class="brand-info">
+                    <h3>Maxiemizer Brand Voice</h3>
+                    <p><strong>Tone:</strong> Calm & competent. Supportive. Direct, not robotic. Builder-first approach.</p>
+                    <p><strong>Target:</strong> Filipino architects, builders, and small teams wanting to work smarter</p>
+                    
+                    <div class="pillars">
+                        <div class="pillar">
+                            <h4>Problem</h4>
+                            <p>Manual processes causing lost leads</p>
+                        </div>
+                        <div class="pillar">
+                            <h4>Solution</h4>
+                            <p>Automated systems that work while you sleep</p>
+                        </div>
+                        <div class="pillar">
+                            <h4>Benefits</h4>
+                            <p>More closes, less chasing, professional look</p>
+                        </div>
+                        <div class="pillar">
+                            <h4>Social Proof</h4>
+                            <p>Case studies and success stories</p>
+                        </div>
+                    </div>
+                </div>
+
+                <form onsubmit="generateContent(event, 'maxiemizer')">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="maxiemizer-platform">Platform</label>
+                            <select id="maxiemizer-platform" required>
+                                <option value="">Select Platform</option>
+                                <option value="instagram-post">Instagram Post</option>
+                                <option value="instagram-carousel">Instagram Carousel</option>
+                                <option value="instagram-reel">Instagram Reel</option>
+                                <option value="instagram-story">Instagram Story</option>
+                                <option value="tiktok">TikTok</option>
+                                <option value="linkedin">LinkedIn</option>
+                                <option value="email">Email</option>
+                                <option value="blog">Blog Post</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maxiemizer-angle">Content Angle</label>
+                            <select id="maxiemizer-angle" required>
+                                <option value="">Select Angle</option>
+                                <option value="problem">Problem - Manual Pain Points</option>
+                                <option value="solution">Solution - How Maxiemizer Helps</option>
+                                <option value="benefits">Benefits - Results & Outcomes</option>
+                                <option value="social-proof">Social Proof - Success Stories</option>
+                                <option value="behind-scenes">Behind the Scenes</option>
+                                <option value="education">Educational - Best Practices</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="maxiemizer-topic">Specific Topic</label>
+                        <input type="text" id="maxiemizer-topic" placeholder="e.g., Lost leads from slow follow-ups" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="maxiemizer-additional">Additional Context (Optional)</label>
+                        <textarea id="maxiemizer-additional" placeholder="Any specific scenarios, target pain points, or special requirements..."></textarea>
+                    </div>
+
+                    <button type="submit" class="generate-btn">Generate Maxiemizer Content</button>
+                </form>
+
+                <div id="maxiemizer-output" class="output-section" style="display:none;">
+                    <h3>Generated Content:</h3>
+                    <div id="maxiemizer-content" class="output-content"></div>
+                    <button onclick="copyToClipboard('maxiemizer-content')" class="copy-btn">Copy to Clipboard</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(brand) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(brand).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        function generateContent(event, brand) {
+            event.preventDefault();
+            
+            const platform = document.getElementById(`${brand}-platform`).value;
+            const pillarOrAngle = document.getElementById(`${brand}-pillar`) ? 
+                document.getElementById(`${brand}-pillar`).value : 
+                document.getElementById(`${brand}-angle`).value;
+            const topic = document.getElementById(`${brand}-topic`).value;
+            const additional = document.getElementById(`${brand}-additional`).value;
+            
+            let content = '';
+            
+            if (brand === 'aveba') {
+                content = generateAvebaContent(platform, pillarOrAngle, topic, additional);
+            } else {
+                content = generateMaxiemizerContent(platform, pillarOrAngle, topic, additional);
+            }
+            
+            document.getElementById(`${brand}-content`).textContent = content;
+            document.getElementById(`${brand}-output`).style.display = 'block';
+        }
+
+        function generateAvebaContent(platform, pillar, topic, additional) {
+            const brandVoice = "Chill but pro. Direct, warm, strategic. Bestie vibes but knows what she's doing.";
+            
+            const pillarContext = {
+                'resonance': 'Create relatable content that makes the audience think "Same na same. Ako to." Focus on shared experiences and feelings.',
+                'recognition': 'Show expertise and results without being mayabang. More of "ito yung ginagawa namin, and we\'re good at it."',
+                'realignment': 'Content that creates "ah kaya pala hindi gumagana yung ginagawa ko" moments. Shift mindsets.',
+                'rebellion': 'Against boring corporate vibes. Show that systems don\'t have to be boring to be professional.',
+                'readiness': 'For people ready to take action. Soft CTAs and gentle pushes to move forward.'
+            };
+            
+            const platformGuidelines = {
+                'instagram-post': 'Single image post. Keep caption concise but engaging. Include relevant hashtags.',
+                'instagram-carousel': 'Multi-slide post. Tell a story across slides. First slide should hook, last slide should have CTA.',
+                'instagram-reel': 'Short-form video script. Hook within first 3 seconds. Include visual cues and trending audio suggestions.',
+                'tiktok': 'Short-form video script. Trend-aware, casual tone. Include popular hashtags and sounds.',
+                'linkedin': 'Professional but still brand voice. Longer form content. Industry-specific insights.',
+                'email': 'Subject line + email body. Personal tone, clear value proposition.',
+                'blog': 'Long-form content. SEO-friendly structure with headers. Educational but entertaining.'
+            };
+            
+            return `AVEBA CONTENT - ${platform.toUpperCase()}
+PILLAR: ${pillar.toUpperCase()}
+TOPIC: ${topic}
+
+BRAND VOICE: ${brandVoice}
+PILLAR FOCUS: ${pillarContext[pillar] || 'General brand content'}
+PLATFORM: ${platformGuidelines[platform] || 'Standard social media post'}
+
+GENERATED CONTENT:
+
+${getAvebaTemplate(platform, pillar, topic, additional)}
+
+HASHTAGS (if applicable):
+#AvebaDigital #CreativeOps #BoldBrands #SystemsDesign #BrandStrategy #MarketingPhilippines
+
+NOTES:
+- Keep the "bestie vibes but professional" tone
+- Use relatable Filipino business scenarios
+- Avoid corporate jargon
+- Include practical insights
+- ${additional ? `Additional context: ${additional}` : 'No additional context provided'}`;
+        }
+
+        function generateMaxiemizerContent(platform, angle, topic, additional) {
+            const brandVoice = "Calm & competent. No hype. Clear, confident answers. Supportive. Builder-first examples.";
+            
+            const angleContext = {
+                'problem': 'Focus on manual pain points that Filipino builders/architects face. Be specific about lost opportunities.',
+                'solution': 'Show how Maxiemizer solves problems. Keep it simple and straightforward.',
+                'benefits': 'Outcomes and results. More closes, less chasing, professional appearance.',
+                'social-proof': 'Case studies, testimonials, success stories (when available).',
+                'behind-scenes': 'How the system works, development updates, team insights.',
+                'education': 'Best practices for client management, industry insights.'
+            };
+            
+            const platformGuidelines = {
+                'instagram-post': 'Clean, professional design. Problem-solution focused.',
+                'instagram-carousel': 'Before/after style content. Show transformation.',
+                'instagram-reel': 'Screen recordings of the system in action. Calm, explanatory tone.',
+                'tiktok': 'Quick tips for builders. Relatable scenarios.',
+                'linkedin': 'Industry insights. Professional but approachable.',
+                'email': 'Nurture sequence style. Educational with soft CTAs.',
+                'blog': 'In-depth guides. SEO-focused on construction/architecture keywords.'
+            };
+            
+            return `MAXIEMIZER CONTENT - ${platform.toUpperCase()}
+ANGLE: ${angle.toUpperCase()}
+TOPIC: ${topic}
+
+BRAND VOICE: ${brandVoice}
+ANGLE FOCUS: ${angleContext[angle] || 'General product content'}
+PLATFORM: ${platformGuidelines[platform] || 'Standard social media post'}
+
+GENERATED CONTENT:
+
+${getMaxiemizerTemplate(platform, angle, topic, additional)}
+
+HASHTAGS (if applicable):
+#Maxiemizer #SmartWork #ArchitectPhilippines #BuilderLife #ClientManagement #BusinessSystems #ConstructionTech
+
+NOTES:
+- Keep tone calm and competent
+- Use Filipino builder/architect examples
+- Avoid tech jargon
+- Focus on practical benefits
+- ${additional ? `Additional context: ${additional}` : 'No additional context provided'}`;
+        }
+
+        function getAvebaTemplate(platform, pillar, topic, additional) {
+            // This would typically call an AI API, but for this demo, we'll use templates
+            const templates = {
+                'instagram-post': {
+                    'resonance': `Still doing everything manually? 
+
+Your system isn't system-ing.
+
+We get it. You started your business to create, not to chase payments or send follow-up DMs at 11 PM.
+
+But here's the thing - every manual process is a potential dropped ball.
+
+What if your backend was as polished as your creative work?
+
+Swipe to see what's possible. ✨
+
+Topic: ${topic}
+${additional ? `\nExtra context: ${additional}` : ''}`,
+                    'recognition': `Meet the team posts, BTS content, or client results (non-cringe version).
+
+We help creative teams build systems that work while they sleep.
+
+Our latest project: ${topic}
+
+Because good creative work deserves a system that keeps up.`,
+                    'realignment': `You're not losing clients because of your skill...
+
+You're losing them because someone else followed up faster.
+
+Real talk: ${topic}
+
+The solution isn't working harder. It's working smarter.`,
+                    'rebellion': `Ops don't have to be boring.
+
+Your creative, techie barkada.
+
+Let's make backend systems as exciting as your front-end work.
+
+${topic}
+
+Ready to rebel against boring business operations?`,
+                    'readiness': `Slide into our DMs with "READY"
+
+If your backend's a mess...
+If you're tired of manual everything...
+If you want systems that actually work...
+
+Let's talk.
+
+${topic}
+
+Soft CTAs for those ready to move forward.`
+                }
+            };
+            
+            return templates[platform]?.[pillar] || `Custom content for ${platform} - ${pillar}:\n\n${topic}\n\n[Generated content would appear here based on your brand voice and strategy]`;
+        }
+
+        function getMaxiemizerTemplate(platform, angle, topic, additional) {
+            const templates = {
+                'instagram-post': {
+                    'problem': `They messaged you at 1AM.
+You replied at 8.
+They already booked someone else.
+
+Sound familiar?
+
+${topic}
+
+It's not your skills. It's your system.
+
+Maxiemizer helps you follow up even when you're asleep.`,
+                    'solution': `What if your business followed up — even when you didn't?
+
+Maxiemizer: Your silent operations partner.
+
+• Automatic follow-ups
+• Clean proposals 
+• Easy payments
+
+${topic}
+
+No more lost leads. No more manual chase.`,
+                    'benefits': `From inbox to closed deal... automatically.
+
+✅ More closes, less chasing
+✅ Professional proposals
+✅ Instant payments
+✅ Systems that scale
+
+${topic}
+
+You're already doing great work. Time your backend matched your front end.`,
+                    'social-proof': `Case study: How [Client Name] went from manual chaos to systematic success.
+
+Before: Lost leads, missed follow-ups
+After: 40% more closes, zero manual chase
+
+${topic}
+
+Results speak louder than features.`
+                }
+            };
+            
+            return templates[platform]?.[angle] || `Custom content for ${platform} - ${angle}:\n\n${topic}\n\n[Generated content would appear here based on Maxiemizer's brand voice and positioning]`;
+        }
+
+        function copyToClipboard(elementId) {
+            const content = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = '#28a745';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#28a745';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
