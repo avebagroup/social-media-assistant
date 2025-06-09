@@ -1,5 +1,5 @@
 // This file handles AI content generation
-import brandKnowledge from '../../../lib/data/brand-knowledge.json';
+import brandKnowledge from '../../lib/data/brand-knowledge.json';
 export default async function handler(req, res) {
   // Only allow POST requests
   if (req.method !== 'POST') {
