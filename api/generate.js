@@ -1,4 +1,5 @@
 // This file handles AI content generation
+import brandKnowledge from '../../../lib/data/brand-knowledge.json';
 export default async function handler(req, res) {
   // Only allow POST requests
   if (req.method !== 'POST') {
@@ -25,16 +26,40 @@ export default async function handler(req, res) {
 
 // Function to generate Aveba content using Claude AI
 async function generateAvebaContent(platform, pillar, topic, additional) {
-  const prompt = `You are a social media expert creating content for AVEBA, a creative operations agency.
+  const brandData = brandKnowledge.aveba;
+  const voice = brandData.brand_voice;
+  const pillarData = brandData.content_pillars?.[pillar] || {};
 
-BRAND VOICE: Chill but pro. Direct, warm, strategic. Bestie vibes but knows what she's doing.
+  const openers = voice.sample_openers.map(o => `- ${o}`).join("\n");
+  const closers = voice.sample_closers.map(c => `- ${c}`).join("\n");
+  const phrases = voice.phrases_to_use.join(", ");
 
-CONTENT PILLAR: ${pillar}
-PLATFORM: ${platform}
-TOPIC: ${topic}
-ADDITIONAL CONTEXT: ${additional || 'None'}
+  const prompt = `
+You are writing content for AVEBA, a creative ops agency that builds backend systems for digital businesses.
 
-Create platform-appropriate content that matches Aveba's voice perfectly. Include relevant hashtags if needed.`;
+### BRAND VOICE
+Tone: ${voice.tone}
+Vibe: ${voice.vibe}
+Style rules: ${voice.style_rules.join("; ")}
+Messaging principles: ${voice.messaging_principles.join("; ")}
+
+Sample Openers:
+${openers}
+
+Sample Closers:
+${closers}
+
+Phrases to Use:
+${phrases}
+
+### CONTENT REQUEST
+Platform: ${platform}
+Pillar: ${pillarData.definition || pillar}
+Topic: ${topic}
+Additional context: ${additional || 'None'}
+
+Your tone = smart, witty, Taglish-coded but English-first, confident but never stiff. Be specific. Use line breaks. Start strong, end stronger. Make people feel seen. Avoid fluff.
+`;
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -54,21 +79,44 @@ Create platform-appropriate content that matches Aveba's voice perfectly. Includ
   });
 
   const data = await response.json();
-  return data.content[0].text;
+  return data.content?.[0]?.text || "Error: No content returned.";
 }
 
 // Function to generate Maxiemizer content using OpenAI
 async function generateMaxiemizerContent(platform, angle, topic, additional) {
-  const prompt = `You are creating content for MAXIEMIZER, a CRM system for Filipino builders and architects.
+  const brandData = brandKnowledge.maxiemizer;
+  const voice = brandData.brand_voice;
+  const angleData = brandData.content_angles?.[angle] || {};
 
-BRAND VOICE: Calm & competent. No hype. Clear, confident answers. Supportive. Builder-first examples.
+  const openers = voice.sample_openers.map(o => `- ${o}`).join("\n");
+  const closers = voice.sample_closers.map(c => `- ${c}`).join("\n");
+  const phrases = voice.phrases_to_use.join(", ");
 
-CONTENT ANGLE: ${angle}
-PLATFORM: ${platform}
-TOPIC: ${topic}
-ADDITIONAL CONTEXT: ${additional || 'None'}
+  const prompt = `
+You are creating content for MAXIEMIZER, a CRM system for Filipino service providers, architects, and builders.
 
-Create content that speaks to Filipino builders/architects who are tired of manual processes. Keep it practical and straightforward.`;
+### BRAND VOICE
+Tone: ${voice.tone}
+Style rules: ${voice.style_rules.join("; ")}
+Messaging principles: ${voice.messaging_principles.join("; ")}
+
+Sample Openers:
+${openers}
+
+Sample Closers:
+${closers}
+
+Phrases to Use:
+${phrases}
+
+### CONTENT REQUEST
+Platform: ${platform}
+Angle: ${angleData.definition || angle}
+Topic: ${topic}
+Additional context: ${additional || 'None'}
+
+Your tone = clear, calm, supportive. Like the organized friend who gets you. Break lines for rhythm. Start strong. End stronger. Make the reader feel supported, not overwhelmed.
+`;
 
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -88,5 +136,5 @@ Create content that speaks to Filipino builders/architects who are tired of manu
   });
 
   const data = await response.json();
-  return data.choices[0].message.content;
+  return data.choices?.[0]?.message?.content || "Error: No content returned.";
 }
