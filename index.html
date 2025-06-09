@@ -411,255 +411,178 @@
     </div>
 
     <script>
-        function switchTab(brand) {
-            // Hide all tab contents
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            
-            // Remove active class from all tabs
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Show selected tab content
-            document.getElementById(brand).classList.add('active');
-            
-            // Add active class to clicked tab
-            event.target.classList.add('active');
-        }
+    function switchTab(brand) {
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        
+        // Remove active class from all tabs
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        
+        // Show selected tab content
+        document.getElementById(brand).classList.add('active');
+        
+        // Add active class to clicked tab
+        event.target.classList.add('active');
+    }
 
-        function generateContent(event, brand) {
-            event.preventDefault();
+    async function generateContent(event, brand) {
+        event.preventDefault();
+        
+        const platform = document.getElementById(`${brand}-platform`).value;
+        const pillarOrAngle = document.getElementById(`${brand}-pillar`) ? 
+            document.getElementById(`${brand}-pillar`).value : 
+            document.getElementById(`${brand}-angle`).value;
+        const topic = document.getElementById(`${brand}-topic`).value;
+        const additional = document.getElementById(`${brand}-additional`).value;
+        
+        // Show loading state
+        const generateBtn = event.target.querySelector('button[type="submit"]') || event.target;
+        const originalText = generateBtn.textContent;
+        generateBtn.textContent = 'Generating with AI...';
+        generateBtn.disabled = true;
+        
+        try {
+            // Call your AI API
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    brand,
+                    platform,
+                    pillar: pillarOrAngle,
+                    topic,
+                    additional
+                })
+            });
             
-            const platform = document.getElementById(`${brand}-platform`).value;
-            const pillarOrAngle = document.getElementById(`${brand}-pillar`) ? 
-                document.getElementById(`${brand}-pillar`).value : 
-                document.getElementById(`${brand}-angle`).value;
-            const topic = document.getElementById(`${brand}-topic`).value;
-            const additional = document.getElementById(`${brand}-additional`).value;
-            
-            let content = '';
-            
-            if (brand === 'aveba') {
-                content = generateAvebaContent(platform, pillarOrAngle, topic, additional);
-            } else {
-                content = generateMaxiemizerContent(platform, pillarOrAngle, topic, additional);
+            if (!response.ok) {
+                throw new Error('Failed to generate content');
             }
             
-            document.getElementById(`${brand}-content`).textContent = content;
+            const data = await response.json();
+            
+            // Display the AI-generated content
+            document.getElementById(`${brand}-content`).textContent = data.content;
             document.getElementById(`${brand}-output`).style.display = 'block';
+            
+            // Save to database
+            await saveContent(brand, platform, pillarOrAngle, topic, data.content);
+            
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById(`${brand}-content`).textContent = 
+                'Sorry, there was an error generating content. Please try again.';
+            document.getElementById(`${brand}-output`).style.display = 'block';
+        } finally {
+            // Restore button
+            generateBtn.textContent = originalText;
+            generateBtn.disabled = false;
         }
+    }
 
-        function generateAvebaContent(platform, pillar, topic, additional) {
-            const brandVoice = "Chill but pro. Direct, warm, strategic. Bestie vibes but knows what she's doing.";
-            
-            const pillarContext = {
-                'resonance': 'Create relatable content that makes the audience think "Same na same. Ako to." Focus on shared experiences and feelings.',
-                'recognition': 'Show expertise and results without being mayabang. More of "ito yung ginagawa namin, and we\'re good at it."',
-                'realignment': 'Content that creates "ah kaya pala hindi gumagana yung ginagawa ko" moments. Shift mindsets.',
-                'rebellion': 'Against boring corporate vibes. Show that systems don\'t have to be boring to be professional.',
-                'readiness': 'For people ready to take action. Soft CTAs and gentle pushes to move forward.'
-            };
-            
-            const platformGuidelines = {
-                'instagram-post': 'Single image post. Keep caption concise but engaging. Include relevant hashtags.',
-                'instagram-carousel': 'Multi-slide post. Tell a story across slides. First slide should hook, last slide should have CTA.',
-                'instagram-reel': 'Short-form video script. Hook within first 3 seconds. Include visual cues and trending audio suggestions.',
-                'tiktok': 'Short-form video script. Trend-aware, casual tone. Include popular hashtags and sounds.',
-                'linkedin': 'Professional but still brand voice. Longer form content. Industry-specific insights.',
-                'email': 'Subject line + email body. Personal tone, clear value proposition.',
-                'blog': 'Long-form content. SEO-friendly structure with headers. Educational but entertaining.'
-            };
-            
-            return `AVEBA CONTENT - ${platform.toUpperCase()}
-PILLAR: ${pillar.toUpperCase()}
-TOPIC: ${topic}
-
-BRAND VOICE: ${brandVoice}
-PILLAR FOCUS: ${pillarContext[pillar] || 'General brand content'}
-PLATFORM: ${platformGuidelines[platform] || 'Standard social media post'}
-
-GENERATED CONTENT:
-
-${getAvebaTemplate(platform, pillar, topic, additional)}
-
-HASHTAGS (if applicable):
-#AvebaDigital #CreativeOps #BoldBrands #SystemsDesign #BrandStrategy #MarketingPhilippines
-
-NOTES:
-- Keep the "bestie vibes but professional" tone
-- Use relatable Filipino business scenarios
-- Avoid corporate jargon
-- Include practical insights
-- ${additional ? `Additional context: ${additional}` : 'No additional context provided'}`;
-        }
-
-        function generateMaxiemizerContent(platform, angle, topic, additional) {
-            const brandVoice = "Calm & competent. No hype. Clear, confident answers. Supportive. Builder-first examples.";
-            
-            const angleContext = {
-                'problem': 'Focus on manual pain points that Filipino builders/architects face. Be specific about lost opportunities.',
-                'solution': 'Show how Maxiemizer solves problems. Keep it simple and straightforward.',
-                'benefits': 'Outcomes and results. More closes, less chasing, professional appearance.',
-                'social-proof': 'Case studies, testimonials, success stories (when available).',
-                'behind-scenes': 'How the system works, development updates, team insights.',
-                'education': 'Best practices for client management, industry insights.'
-            };
-            
-            const platformGuidelines = {
-                'instagram-post': 'Clean, professional design. Problem-solution focused.',
-                'instagram-carousel': 'Before/after style content. Show transformation.',
-                'instagram-reel': 'Screen recordings of the system in action. Calm, explanatory tone.',
-                'tiktok': 'Quick tips for builders. Relatable scenarios.',
-                'linkedin': 'Industry insights. Professional but approachable.',
-                'email': 'Nurture sequence style. Educational with soft CTAs.',
-                'blog': 'In-depth guides. SEO-focused on construction/architecture keywords.'
-            };
-            
-            return `MAXIEMIZER CONTENT - ${platform.toUpperCase()}
-ANGLE: ${angle.toUpperCase()}
-TOPIC: ${topic}
-
-BRAND VOICE: ${brandVoice}
-ANGLE FOCUS: ${angleContext[angle] || 'General product content'}
-PLATFORM: ${platformGuidelines[platform] || 'Standard social media post'}
-
-GENERATED CONTENT:
-
-${getMaxiemizerTemplate(platform, angle, topic, additional)}
-
-HASHTAGS (if applicable):
-#Maxiemizer #SmartWork #ArchitectPhilippines #BuilderLife #ClientManagement #BusinessSystems #ConstructionTech
-
-NOTES:
-- Keep tone calm and competent
-- Use Filipino builder/architect examples
-- Avoid tech jargon
-- Focus on practical benefits
-- ${additional ? `Additional context: ${additional}` : 'No additional context provided'}`;
-        }
-
-        function getAvebaTemplate(platform, pillar, topic, additional) {
-            // This would typically call an AI API, but for this demo, we'll use templates
-            const templates = {
-                'instagram-post': {
-                    'resonance': `Still doing everything manually? 
-
-Your system isn't system-ing.
-
-We get it. You started your business to create, not to chase payments or send follow-up DMs at 11 PM.
-
-But here's the thing - every manual process is a potential dropped ball.
-
-What if your backend was as polished as your creative work?
-
-Swipe to see what's possible. ✨
-
-Topic: ${topic}
-${additional ? `\nExtra context: ${additional}` : ''}`,
-                    'recognition': `Meet the team posts, BTS content, or client results (non-cringe version).
-
-We help creative teams build systems that work while they sleep.
-
-Our latest project: ${topic}
-
-Because good creative work deserves a system that keeps up.`,
-                    'realignment': `You're not losing clients because of your skill...
-
-You're losing them because someone else followed up faster.
-
-Real talk: ${topic}
-
-The solution isn't working harder. It's working smarter.`,
-                    'rebellion': `Ops don't have to be boring.
-
-Your creative, techie barkada.
-
-Let's make backend systems as exciting as your front-end work.
-
-${topic}
-
-Ready to rebel against boring business operations?`,
-                    'readiness': `Slide into our DMs with "READY"
-
-If your backend's a mess...
-If you're tired of manual everything...
-If you want systems that actually work...
-
-Let's talk.
-
-${topic}
-
-Soft CTAs for those ready to move forward.`
-                }
-            };
-            
-            return templates[platform]?.[pillar] || `Custom content for ${platform} - ${pillar}:\n\n${topic}\n\n[Generated content would appear here based on your brand voice and strategy]`;
-        }
-
-        function getMaxiemizerTemplate(platform, angle, topic, additional) {
-            const templates = {
-                'instagram-post': {
-                    'problem': `They messaged you at 1AM.
-You replied at 8.
-They already booked someone else.
-
-Sound familiar?
-
-${topic}
-
-It's not your skills. It's your system.
-
-Maxiemizer helps you follow up even when you're asleep.`,
-                    'solution': `What if your business followed up — even when you didn't?
-
-Maxiemizer: Your silent operations partner.
-
-• Automatic follow-ups
-• Clean proposals 
-• Easy payments
-
-${topic}
-
-No more lost leads. No more manual chase.`,
-                    'benefits': `From inbox to closed deal... automatically.
-
-✅ More closes, less chasing
-✅ Professional proposals
-✅ Instant payments
-✅ Systems that scale
-
-${topic}
-
-You're already doing great work. Time your backend matched your front end.`,
-                    'social-proof': `Case study: How [Client Name] went from manual chaos to systematic success.
-
-Before: Lost leads, missed follow-ups
-After: 40% more closes, zero manual chase
-
-${topic}
-
-Results speak louder than features.`
-                }
-            };
-            
-            return templates[platform]?.[angle] || `Custom content for ${platform} - ${angle}:\n\n${topic}\n\n[Generated content would appear here based on Maxiemizer's brand voice and positioning]`;
-        }
-
-        function copyToClipboard(elementId) {
-            const content = document.getElementById(elementId).textContent;
-            navigator.clipboard.writeText(content).then(() => {
-                const btn = event.target;
-                const originalText = btn.textContent;
-                btn.textContent = 'Copied!';
-                btn.style.background = '#28a745';
-                setTimeout(() => {
-                    btn.textContent = originalText;
-                    btn.style.background = '#28a745';
-                }, 2000);
+    async function saveContent(brand, platform, pillar, topic, content) {
+        try {
+            await fetch('/api/save-content', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    brand,
+                    platform,
+                    pillar,
+                    topic,
+                    content,
+                    userEmail: 'team@aveba.com' // You can make this dynamic later
+                })
             });
+        } catch (error) {
+            console.error('Error saving content:', error);
+            // Don't show error to user, just log it
         }
-    </script>
+    }
+
+    function copyToClipboard(elementId) {
+        const content = document.getElementById(elementId).textContent;
+        navigator.clipboard.writeText(content).then(() => {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = 'Copied!';
+            btn.style.background = '#28a745';
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = '#28a745';
+            }, 2000);
+        });
+    }
+
+    // Add content history feature
+    async function loadContentHistory() {
+        try {
+            const response = await fetch('/api/get-history');
+            const history = await response.json();
+            displayHistory(history);
+        } catch (error) {
+            console.error('Error loading history:', error);
+        }
+    }
+
+    function displayHistory(history) {
+        // This will show previous generations - we can add this feature later
+        console.log('Content history loaded:', history);
+    }
+
+    // Auto-save form data as user types (nice UX touch)
+    function saveFormData(brand) {
+        const formData = {
+            platform: document.getElementById(`${brand}-platform`).value,
+            pillar: document.getElementById(`${brand}-pillar`)?.value || 
+                   document.getElementById(`${brand}-angle`)?.value,
+            topic: document.getElementById(`${brand}-topic`).value,
+            additional: document.getElementById(`${brand}-additional`).value
+        };
+        
+        localStorage.setItem(`${brand}-form-data`, JSON.stringify(formData));
+    }
+
+    // Load saved form data when page loads
+    function loadFormData(brand) {
+        const saved = localStorage.getItem(`${brand}-form-data`);
+        if (saved) {
+            const formData = JSON.parse(saved);
+            
+            if (formData.platform) 
+                document.getElementById(`${brand}-platform`).value = formData.platform;
+            if (formData.pillar && document.getElementById(`${brand}-pillar`)) 
+                document.getElementById(`${brand}-pillar`).value = formData.pillar;
+            if (formData.pillar && document.getElementById(`${brand}-angle`)) 
+                document.getElementById(`${brand}-angle`).value = formData.pillar;
+            if (formData.topic) 
+                document.getElementById(`${brand}-topic`).value = formData.topic;
+            if (formData.additional) 
+                document.getElementById(`${brand}-additional`).value = formData.additional;
+        }
+    }
+
+    // Initialize when page loads
+    window.addEventListener('load', function() {
+        loadFormData('aveba');
+        loadFormData('maxiemizer');
+        
+        // Add auto-save listeners
+        ['aveba', 'maxiemizer'].forEach(brand => {
+            const inputs = document.querySelectorAll(`#${brand} input, #${brand} select, #${brand} textarea`);
+            inputs.forEach(input => {
+                input.addEventListener('change', () => saveFormData(brand));
+            });
+        });
+    });
+</script>
 </body>
 </html>
