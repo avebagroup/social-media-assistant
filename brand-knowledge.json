@@ -1,0 +1,136 @@
+{
+  "aveba": {
+    "brand_voice": {
+      "tone": "Direct, conversational, slightly edgy. Chill but pro. Bestie vibes but knows what she's doing.",
+      "style_rules": [
+        "No emojis",
+        "No em dashes", 
+        "Use regular dashes or periods",
+        "Direct questions work well",
+        "Problem-first approach",
+        "Conversational but strategic"
+      ],
+      "phrases_to_use": [
+        "Your system isn't system-ing",
+        "We've been there", 
+        "We live for it",
+        "All the stuff that makes your brain say 'ugh'",
+        "We're not judging",
+        "Let me handle it"
+      ],
+      "voice_examples": [
+        "Still typing the same DM for the 5th time?",
+        "Your backend has been waiting for us",
+        "Systems with flavor",
+        "We clean up the chaos so your business stops feeling like a never-ending to-do list"
+      ]
+    },
+    "content_pillars": {
+      "resonance": {
+        "definition": "Relatable content where audience thinks 'Same na same. Ako to.' Focus on shared experiences.",
+        "approach": "Problem-first, then connection",
+        "examples": ["Still doing everything manually?", "We've been there"]
+      },
+      "recognition": {
+        "definition": "Show expertise without being mayabang. 'Ito yung ginagawa namin, and we're good at it.'",
+        "approach": "Team introductions, behind-the-scenes, process reveals",
+        "examples": ["Meet the team", "AJ is the reason things get done"]
+      },
+      "realignment": {
+        "definition": "Create 'ah kaya pala hindi gumagana yung ginagawa ko' moments",
+        "approach": "Shift perspective on common problems",
+        "examples": ["Your system isn't system-ing"]
+      },
+      "rebellion": {
+        "definition": "Against boring corporate vibes. Systems don't have to be boring",
+        "approach": "Edgy takes, personality-driven content",
+        "examples": ["Systems with flavor", "Yes, that sounded wrong. But you'll remember it"]
+      },
+      "readiness": {
+        "definition": "For people ready to take action",
+        "approach": "Soft CTAs, gentle push to move",
+        "examples": ["Slide into our DMs with 'READY'"]
+      }
+    },
+    "target_audience": "Business owners who want to stay hands-on but not burned out. Creative teams tired of manual processes.",
+    "services": ["Funnels", "Email systems", "Automation", "Backend cleanup"],
+    "hashtags": ["#AvebaDigital", "#CreativeOps", "#BoldBrands", "#SystemsDesign"],
+    "ctas": [
+      "Slide into our DMs with 'READY'",
+      "Let's talk backend",
+      "Ready to fix your system?"
+    ]
+  },
+  "maxiemizer": {
+    "brand_voice": {
+      "tone": "Calm, competent, supportive. Empathetic but solution-focused. Professional but warm.",
+      "style_rules": [
+        "No emojis",
+        "No em dashes",
+        "Use periods for emphasis", 
+        "Reframe problems positively",
+        "Focus on support and understanding",
+        "Solution-oriented messaging"
+      ],
+      "phrases_to_use": [
+        "You're not behind because you lack discipline",
+        "Most businesses don't struggle because they lack skill",
+        "The goal isn't just automation",
+        "Support that feels effortless",
+        "You're unsupported, not lazy"
+      ],
+      "voice_examples": [
+        "You're not lazy. You're unsupported.",
+        "The system that follows through even when you're offline",
+        "Maxiemizer gives your business the structure it's been faking"
+      ]
+    },
+    "target_audience": "Filipino service providers, architects, builders, small teams tired of manual processes",
+    "pain_points": [
+      "Manual follow-ups",
+      "Lost leads", 
+      "Repetitive tasks",
+      "Looking unprofessional",
+      "Burnout from admin work"
+    ],
+    "solutions": [
+      "Automated follow-ups",
+      "Lead tracking",
+      "Professional proposals",
+      "Easy payment collection",
+      "Systems that work while you sleep"
+    ],
+    "brand_personality": "Maxie - the organized friend who has their stuff together but doesn't make you feel bad about it",
+    "positioning": "Not just a CRM - a support system for service providers",
+    "hashtags": ["#Maxiemizer", "#SmartWork", "#ServiceProviders", "#BusinessSystems"],
+    "content_angles": {
+      "problem": "Manual processes causing lost leads and burnout",
+      "solution": "Automated systems that work while you sleep", 
+      "benefits": "More closes, less chasing, professional appearance",
+      "social_proof": "Success stories and case studies",
+      "education": "Best practices for client management"
+    }
+  },
+  "sample_content": {
+    "aveba": [
+      {
+        "caption": "Still typing the same DM for the 5th time?\nStill manually sending follow-ups?\nStill reminding people to click the dang link?\nYour system isn't system-ing.\nBut we're not judging. We've been there.\nWe're Aveba and we're coming for your backend.",
+        "pillar": "resonance"
+      },
+      {
+        "caption": "We're the team your backend has been waiting for.\nFunnels. Emails. Systems. Automation.\nAll the stuff that makes your brain say 'ugh' - we live for it.\nWe clean up the chaos so your business stops feeling like a never-ending to-do list.\nAveba Digital = systems with flavor.",
+        "pillar": "recognition"
+      }
+    ],
+    "maxiemizer": [
+      {
+        "caption": "Most businesses don't struggle because they lack skill.\nThey struggle because they're still doing everything manually.\nFollowing up. Sending links. Reminding clients.\nAnd when things fall through the cracks? It looks like poor service.\nMaxiemizer was built for that gap.",
+        "pillar": "problem"
+      },
+      {
+        "caption": "You're not behind because you lack discipline.\nYou're behind because you're doing too much manually.\nThe truth is - most service providers are not disorganized.\nThey're just tired of remembering everything on their own.\nMaxiemizer gives your business the structure it's been faking.",
+        "pillar": "solution"
+      }
+    ]
+  }
+}
