@@ -410,7 +410,21 @@
         </div>
     </div>
 
-  <script>
+ <script>
+    // Load brand knowledge base
+    let brandKnowledge = null;
+
+    // Load knowledge base when page loads
+    async function loadBrandKnowledge() {
+        try {
+            const response = await fetch('./brand-knowledge.json');
+            brandKnowledge = await response.json();
+            console.log('Brand knowledge loaded successfully');
+        } catch (error) {
+            console.error('Failed to load brand knowledge:', error);
+        }
+    }
+
     function switchTab(brand) {
         document.querySelectorAll('.tab-content').forEach(content => {
             content.classList.remove('active');
@@ -427,25 +441,38 @@
     async function generateContent(event, brand) {
         event.preventDefault();
         
-        // Get form values
         const platform = document.getElementById(`${brand}-platform`).value;
-        const topic = document.getElementById(`${brand}-topic`).value;
-        const additional = document.getElementById(`${brand}-additional`).value;
-        
         let pillarOrAngle;
+        
+        // Handle different field names properly
         if (brand === 'aveba') {
-            pillarOrAngle = document.getElementById('aveba-pillar').value;
-        } else {
-            pillarOrAngle = document.getElementById('maxiemizer-angle').value;
+            const pillarField = document.getElementById('aveba-pillar');
+            if (!pillarField) {
+                console.error('Aveba pillar field not found');
+                return;
+            }
+            pillarOrAngle = pillarField.value;
+        } else if (brand === 'maxiemizer') {
+            const angleField = document.getElementById('maxiemizer-angle');
+            if (!angleField) {
+                console.error('Maxiemizer angle field not found');
+                return;
+            }
+            pillarOrAngle = angleField.value;
         }
 
-        // Validate inputs
-        if (!platform || !pillarOrAngle || !topic.trim()) {
-            alert('Please fill in all required fields');
+        if (!pillarOrAngle) {
+            alert('Please select a content pillar/angle');
             return;
         }
 
-        console.log('Generating content for:', brand, platform, pillarOrAngle, topic); // Debug log
+        const topic = document.getElementById(`${brand}-topic`).value;
+        const additional = document.getElementById(`${brand}-additional`).value;
+        
+        if (!topic.trim()) {
+            alert('Please enter a topic');
+            return;
+        }
 
         // Show loading state
         const generateBtn = event.target.querySelector('button[type="submit"]') || event.target;
@@ -485,7 +512,7 @@
         content += `PILLAR: ${pillar.toUpperCase()}\n`;
         content += `TOPIC: ${topic}\n\n`;
         
-        // Create content based on actual pillar selection
+        // Create Filipino-coded, relatable content
         switch(pillar) {
             case 'resonance':
                 content += createAvebaResonance(topic);
@@ -503,7 +530,7 @@
                 content += createAvebaReadiness(topic);
                 break;
             default:
-                content += `Unknown pillar: ${pillar}. Please select a valid pillar.`;
+                content += createGenericAveba(topic);
         }
         
         if (platform.includes('instagram') || platform === 'tiktok') {
@@ -518,7 +545,39 @@
     }
 
     function createAvebaResonance(topic) {
-        return `You ever notice how ${topic.toLowerCase()} just keeps happening?\n\nCopy-pasting the same reply for the 5th time?\nManually reminding clients for the 3rd time?\nYour system isn't system-ing.\n\nWe've all been there.\nYou're not just "bad at systems."\nYou've just outgrown the way you've been operating.\n\nAll the stuff that makes your brain say 'ugh' - we live for it.\n\nAveba Digital = systems with flavor.`;
+        const openers = [
+            "You ever notice how",
+            "Let me guess",
+            "Anyone else tired of",
+            "Still doing this manually?"
+        ];
+        
+        const relatable = [
+            "Copy-pasting the same reply for the 5th time?",
+            "Manually reminding clients for the 3rd time?",
+            "Your system isn't system-ing.",
+            "You didn't sign up for this."
+        ];
+        
+        const connection = [
+            "We've all been there.",
+            "You're not just 'bad at systems.'",
+            "You've just outgrown the way you've been operating.",
+            "But we're not judging. We've been there."
+        ];
+        
+        const closer = [
+            "Aveba Digital = systems with flavor.",
+            "We clean up the chaos so your business stops feeling like a never-ending to-do list.",
+            "All the stuff that makes your brain say 'ugh' - we live for it."
+        ];
+        
+        const opener = openers[Math.floor(Math.random() * openers.length)];
+        const relate = relatable[Math.floor(Math.random() * relatable.length)];
+        const connect = connection[Math.floor(Math.random() * connection.length)];
+        const close = closer[Math.floor(Math.random() * closer.length)];
+        
+        return `${opener} ${topic.toLowerCase()}?\n\n${relate}\n\n${connect}\n\n${close}`;
     }
 
     function createAvebaRecognition(topic) {
@@ -530,11 +589,11 @@
     }
 
     function createAvebaRebellion(topic) {
-        return `You don't need to run your business like it's still 2012.\n\nYou don't need to manually handle ${topic.toLowerCase()}.\nYou don't need to copy-paste the same onboarding steps.\nYou don't need to babysit your pipeline.\n\nThere's a better way to do this.\nAnd it doesn't start with hiring more people.\nIt starts with building smarter systems.\n\nAveba Digital = systems with flavor.\nBecause business operations should work for you, not against you.`;
+        return `You don't need to run your business like it's still 2012.\n\nYou don't need to manually ${topic.toLowerCase()}.\nYou don't need to copy-paste the same onboarding steps.\nYou don't need to babysit your pipeline.\n\nThere's a better way to do this.\nAnd it doesn't start with hiring more people.\nIt starts with building smarter systems.\n\nAveba Digital = systems with flavor.\nBecause business operations should work for you, not against you.`;
     }
 
     function createAvebaReadiness(topic) {
-        return `You've carried your business with so much heart.\nYou've shown up on hard days.\nYou've figured things out when no one else could.\n\nBut just because you can handle ${topic.toLowerCase()}...\nDoesn't mean you have to.\n\nReady to stop doing this manually?\n\nSlide into our DMs with 'READY'\n\nYou deserve to lead from overflow - not survival mode.`;
+        return `You've carried your business with so much heart.\nYou've shown up on hard days.\nYou've figured things out when no one else could.\n\nBut just because you can do everything...\nDoesn't mean you have to.\n\nReady to stop ${topic.toLowerCase()} manually?\n\nSlide into our DMs with 'READY'\n\nYou deserve to lead from overflow - not survival mode.`;
     }
 
     function createMaxiemizerContent(platform, angle, topic, additional) {
@@ -564,7 +623,7 @@
                 content += createMaxiemizerEducation(topic);
                 break;
             default:
-                content += `Unknown angle: ${angle}. Please select a valid angle.`;
+                content += createGenericMaxiemizer(topic);
         }
         
         if (platform.includes('instagram') || platform === 'tiktok') {
@@ -599,7 +658,7 @@
     }
 
     function createMaxiemizerEducation(topic) {
-        return `Best practices for ${topic.toLowerCase()}:\n\nYou didn't start this to become your own assistant.\nYou're not supposed to be the system.\n\nBut just because you can handle everything...\nDoesn't mean you have to.\n\nLet Maxiemizer hold the parts that wear you down.\nYou're not asking for too much.\nYou're just doing too much by yourself.`;
+        return `Best practices for ${topic.toLowerCase()}:\n\nYou didn't start this to become your own assistant.\nYou're not supposed to be the system.\n\nBut just because you can do everything...\nDoesn't mean you have to.\n\nLet Maxiemizer hold the parts that wear you down.\nYou're not asking for too much.\nYou're just doing too much by yourself.`;
     }
 
     function getPlatformHeader(platform, brand) {
@@ -616,6 +675,14 @@
         return headers[platform] || `SOCIAL MEDIA POST - ${brand}`;
     }
 
+    function createGenericAveba(topic) {
+        return `${topic} giving you headaches?\n\nWe've been there.\n\nAll the stuff that makes your brain say 'ugh' - we live for it.\n\nAveba Digital = systems with flavor.`;
+    }
+
+    function createGenericMaxiemizer(topic) {
+        return `Most businesses struggle with ${topic.toLowerCase()} because they're doing it manually.\n\nMaxiemizer automates the process so you can focus on what matters.\n\nSupport that feels effortless.`;
+    }
+
     function copyToClipboard(elementId) {
         const content = document.getElementById(elementId).textContent;
         navigator.clipboard.writeText(content).then(() => {
@@ -629,6 +696,51 @@
             }, 2000);
         });
     }
+
+    // Auto-save and load form data
+    function saveFormData(brand) {
+        const formData = {
+            platform: document.getElementById(`${brand}-platform`).value,
+            pillar: document.getElementById(`${brand}-pillar`)?.value || 
+                   document.getElementById(`${brand}-angle`)?.value,
+            topic: document.getElementById(`${brand}-topic`).value,
+            additional: document.getElementById(`${brand}-additional`).value
+        };
+        
+        localStorage.setItem(`${brand}-form-data`, JSON.stringify(formData));
+    }
+
+    function loadFormData(brand) {
+        const saved = localStorage.getItem(`${brand}-form-data`);
+        if (saved) {
+            const formData = JSON.parse(saved);
+            
+            if (formData.platform) 
+                document.getElementById(`${brand}-platform`).value = formData.platform;
+            if (formData.pillar && document.getElementById(`${brand}-pillar`)) 
+                document.getElementById(`${brand}-pillar`).value = formData.pillar;
+            if (formData.pillar && document.getElementById(`${brand}-angle`)) 
+                document.getElementById(`${brand}-angle`).value = formData.pillar;
+            if (formData.topic) 
+                document.getElementById(`${brand}-topic`).value = formData.topic;
+            if (formData.additional) 
+                document.getElementById(`${brand}-additional`).value = formData.additional;
+        }
+    }
+
+    // Initialize when page loads
+    window.addEventListener('load', function() {
+        loadBrandKnowledge();
+        loadFormData('aveba');
+        loadFormData('maxiemizer');
+        
+        ['aveba', 'maxiemizer'].forEach(brand => {
+            const inputs = document.querySelectorAll(`#${brand} input, #${brand} select, #${brand} textarea`);
+            inputs.forEach(input => {
+                input.addEventListener('change', () => saveFormData(brand));
+            });
+        });
+    });
 </script>
 </body>
 </html>
