@@ -445,6 +445,8 @@
             return;
         }
 
+        console.log('Generating content for:', brand, platform, pillarOrAngle, topic); // Debug log
+
         // Show loading state
         const generateBtn = event.target.querySelector('button[type="submit"]') || event.target;
         const originalText = generateBtn.textContent;
@@ -469,8 +471,6 @@
     }
 
     function createBrandContent(brand, platform, pillarOrAngle, topic, additional) {
-        console.log('Generating content for:', brand, platform, pillarOrAngle, topic); // Debug log
-        
         if (brand === 'aveba') {
             return createAvebaContent(platform, pillarOrAngle, topic, additional);
         } else {
@@ -518,7 +518,7 @@
     }
 
     function createAvebaResonance(topic) {
-        return `You ever notice how ${topic.toLowerCase()} just keeps happening?\n\nCopy-pasting the same reply for the 5th time?\nManually reminding clients for the 3rd time?\nYour system isn't system-ing.\n\nWe've all been there.\nYou're not just "bad at systems."\nYou've just outgrown the way you've been operating.\n\nAveba Digital = systems with flavor.`;
+        return `You ever notice how ${topic.toLowerCase()} just keeps happening?\n\nCopy-pasting the same reply for the 5th time?\nManually reminding clients for the 3rd time?\nYour system isn't system-ing.\n\nWe've all been there.\nYou're not just "bad at systems."\nYou've just outgrown the way you've been operating.\n\nAll the stuff that makes your brain say 'ugh' - we live for it.\n\nAveba Digital = systems with flavor.`;
     }
 
     function createAvebaRecognition(topic) {
