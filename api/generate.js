@@ -1,5 +1,6 @@
 // This file handles AI content generation
 import brandKnowledge from './brand-knowledge.json';
+
 export default async function handler(req, res) {
   // Only allow POST requests
   if (req.method !== 'POST') {
