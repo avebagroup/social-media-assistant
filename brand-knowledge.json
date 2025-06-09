@@ -1,14 +1,37 @@
 {
   "aveba": {
     "brand_voice": {
-      "tone": "Direct, conversational, slightly edgy. Chill but pro. Bestie vibes but knows what she's doing.",
+      "tone": "Confident but chill. Direct, smart, slightly side-eye but never mean. Smart friend who gives great advice without making you feel dumb.",
+      "vibe": "Witty, Filipino-coded (but English-first), Human, grounded, a bit cheeky, Strategic but never robotic",
       "style_rules": [
         "No emojis",
-        "No em dashes", 
-        "Use regular dashes or periods",
-        "Direct questions work well",
-        "Problem-first approach",
-        "Conversational but strategic"
+        "No em dashes",
+        "No 'real talk,' 'here's the thing,' or overly-used content phrases",
+        "Don't call us 'backend fixers,' 'chaos organizers,' or anything cringe",
+        "Use line breaks for rhythm. No long paragraphs",
+        "Start strong. End stronger",
+        "Use repetition for impact",
+        "When in doubt, cut the fluff"
+      ],
+      "messaging_principles": [
+        "Write to make people FEEL SEEN",
+        "Show you get their struggle", 
+        "Avoid generic advice",
+        "Be specific about the pain and the solution",
+        "Center the reader, not us - say 'you' more than 'we'",
+        "Make them feel like we're in it with them",
+        "Focus on ENERGY over FEATURES - what does the system DO for their brain, time, energy?"
+      ],
+      "sample_openers": [
+        "You ever notice how...",
+        "Let me guess",
+        "Anyone else tired of",
+        "Still doing this manually?"
+      ],
+      "sample_closers": [
+        "You don't need more willpower. You need a system that works.",
+        "You're not asking for too much. You're just doing too much by yourself.",
+        "Aveba Digital = systems with flavor."
       ],
       "phrases_to_use": [
         "Your system isn't system-ing",
@@ -16,40 +39,45 @@
         "We live for it",
         "All the stuff that makes your brain say 'ugh'",
         "We're not judging",
-        "Let me handle it"
+        "Let me handle it",
+        "You didn't sign up for this",
+        "You're not just 'bad at systems'",
+        "You've just outgrown the way you've been operating"
       ],
       "voice_examples": [
         "Still typing the same DM for the 5th time?",
         "Your backend has been waiting for us",
         "Systems with flavor",
-        "We clean up the chaos so your business stops feeling like a never-ending to-do list"
+        "We clean up the chaos so your business stops feeling like a never-ending to-do list",
+        "Copy-pasting the same reply for the 5th time?",
+        "Manually reminding clients for the 3rd time?"
       ]
     },
     "content_pillars": {
       "resonance": {
-        "definition": "Relatable content where audience thinks 'Same na same. Ako to.' Focus on shared experiences.",
-        "approach": "Problem-first, then connection",
-        "examples": ["Still doing everything manually?", "We've been there"]
+        "definition": "Content that makes them go 'omg same.' Focus: shared struggles, frustrations, quiet thoughts people rarely admit.",
+        "approach": "Show you get their struggle. Be specific about the pain.",
+        "example": "You're not tired because you hate your job. You're tired because every task feels like a repeat. Copy-pasting the same link. Rewriting the same reply. Manually reminding clients for the 3rd time. You didn't sign up for this. And no, you're not just 'bad at systems.' You've just outgrown the way you've been operating."
       },
       "recognition": {
-        "definition": "Show expertise without being mayabang. 'Ito yung ginagawa namin, and we're good at it.'",
-        "approach": "Team introductions, behind-the-scenes, process reveals",
-        "examples": ["Meet the team", "AJ is the reason things get done"]
+        "definition": "Showing our edge without bragging. Let people recognize our skills by pointing out invisible wins and behind-the-scenes magic.",
+        "approach": "Show expertise without being mayabang. Point out what good systems actually look like.",
+        "example": "A clean system doesn't look flashy. It looks like: Clients getting their emails on time. DMs answered even while you're asleep. Fewer missed leads, more closed deals. You won't always see the system working. But you'll feel it in your schedule. Your energy. Your confidence. That's the kind of 'pretty' we care about."
       },
       "realignment": {
-        "definition": "Create 'ah kaya pala hindi gumagana yung ginagawa ko' moments",
-        "approach": "Shift perspective on common problems",
-        "examples": ["Your system isn't system-ing"]
+        "definition": "Shifting beliefs, breaking patterns. Challenge outdated norms (like hustle culture, overworking, toxic productivity).",
+        "approach": "Create 'ah kaya pala hindi gumagana yung ginagawa ko' moments. Challenge beliefs.",
+        "example": "Working late doesn't mean you're working smart. Burnout isn't proof of success. And doing it all manually isn't noble - it's just exhausting. We've been taught that success = sacrifice. But what if ease is also a strategy?"
       },
       "rebellion": {
-        "definition": "Against boring corporate vibes. Systems don't have to be boring",
-        "approach": "Edgy takes, personality-driven content",
-        "examples": ["Systems with flavor", "Yes, that sounded wrong. But you'll remember it"]
+        "definition": "Call out the broken ways and offer a better way. Provoke thought, question old systems, spark change.",
+        "approach": "Against boring corporate vibes. Challenge the status quo.",
+        "example": "You don't need to run your business like it's still 2012. You don't need to manually chase leads. You don't need to copy-paste the same onboarding steps. You don't need to babysit your pipeline. There's a better way to do this. And it doesn't start with hiring more people - it starts with building smarter systems."
       },
       "readiness": {
-        "definition": "For people ready to take action",
-        "approach": "Soft CTAs, gentle push to move",
-        "examples": ["Slide into our DMs with 'READY'"]
+        "definition": "Build trust, show we care, share the why behind what we do. Focus: intimacy, connection, values, relatability.",
+        "approach": "For people ready to take action. Soft CTAs, gentle push to move.",
+        "example": "You've carried your business with so much heart. You've shown up on hard days. You've figured things out when no one else could. But just because you can do everything... Doesn't mean you have to. Let Aveba hold the parts that wear you down. You deserve to lead from overflow - not survival mode."
       }
     },
     "target_audience": "Business owners who want to stay hands-on but not burned out. Creative teams tired of manual processes.",
@@ -59,30 +87,55 @@
       "Slide into our DMs with 'READY'",
       "Let's talk backend",
       "Ready to fix your system?"
-    ]
+    ],
+    "human_design_influence": {
+      "approach": "We don't create to keep up with trends - we create from flow. Content reflects lived experience, not just strategy. Our voice comes from being a 4/6: relationship-first, story-led, and grounded in real life.",
+      "filter": "Our content is not for performance. It's for resonance. Every post should pass at least one of these filters: Does it make someone feel seen? Does it offer recognition of our edge? Does it realign their beliefs? Does it speak to someone who's finally ready?"
+    }
   },
   "maxiemizer": {
     "brand_voice": {
-      "tone": "Calm, competent, supportive. Empathetic but solution-focused. Professional but warm.",
+      "tone": "Calm, competent, supportive. Empathetic but solution-focused. Professional but warm. The organized friend who has their stuff together but doesn't make you feel bad about it.",
       "style_rules": [
         "No emojis",
         "No em dashes",
         "Use periods for emphasis", 
         "Reframe problems positively",
         "Focus on support and understanding",
-        "Solution-oriented messaging"
+        "Solution-oriented messaging",
+        "Use line breaks for rhythm",
+        "Start strong. End stronger"
+      ],
+      "messaging_principles": [
+        "Write to make people FEEL SEEN",
+        "You're not lazy. You're unsupported.",
+        "Center the reader, not us",
+        "Focus on what the system frees up for their brain, time, energy"
+      ],
+      "sample_openers": [
+        "You're not lazy. You're unsupported.",
+        "You didn't start this to become your own assistant.",
+        "You're not supposed to be the system."
+      ],
+      "sample_closers": [
+        "You don't need more willpower. You need a system that works.",
+        "Join the waitlist if you're tired of carrying the backend alone.",
+        "You're not asking for too much. You're just doing too much by yourself."
       ],
       "phrases_to_use": [
         "You're not behind because you lack discipline",
         "Most businesses don't struggle because they lack skill",
         "The goal isn't just automation",
         "Support that feels effortless",
-        "You're unsupported, not lazy"
+        "You're unsupported, not lazy",
+        "The system that follows through even when you're offline",
+        "Maxiemizer gives your business the structure it's been faking"
       ],
       "voice_examples": [
         "You're not lazy. You're unsupported.",
         "The system that follows through even when you're offline",
-        "Maxiemizer gives your business the structure it's been faking"
+        "Maxiemizer gives your business the structure it's been faking",
+        "Most businesses don't struggle because they lack skill. They struggle because they're still doing everything manually."
       ]
     },
     "target_audience": "Filipino service providers, architects, builders, small teams tired of manual processes",
@@ -91,24 +144,27 @@
       "Lost leads", 
       "Repetitive tasks",
       "Looking unprofessional",
-      "Burnout from admin work"
+      "Burnout from admin work",
+      "Doing everything manually",
+      "Carrying the backend alone"
     ],
     "solutions": [
       "Automated follow-ups",
       "Lead tracking",
       "Professional proposals",
       "Easy payment collection",
-      "Systems that work while you sleep"
+      "Systems that work while you sleep",
+      "Structure that feels effortless"
     ],
     "brand_personality": "Maxie - the organized friend who has their stuff together but doesn't make you feel bad about it",
     "positioning": "Not just a CRM - a support system for service providers",
-    "hashtags": ["#Maxiemizer", "#SmartWork", "#ServiceProviders", "#BusinessSystems"],
+    "hashtags": ["#Maxiemizer", "#SmartWork", "#ServiceProviders", "#BusinessSystems", "#ArchitectPhilippines", "#BuilderLife"],
     "content_angles": {
-      "problem": "Manual processes causing lost leads and burnout",
-      "solution": "Automated systems that work while you sleep", 
-      "benefits": "More closes, less chasing, professional appearance",
-      "social_proof": "Success stories and case studies",
-      "education": "Best practices for client management"
+      "problem": "Manual processes causing lost leads and burnout. Focus: You're not lazy, you're unsupported.",
+      "solution": "Automated systems that work while you sleep. Focus: Support that feels effortless.", 
+      "benefits": "More closes, less chasing, professional appearance. Focus: What the system frees up.",
+      "social-proof": "Success stories and case studies. Focus: Results speak louder than features.",
+      "education": "Best practices for client management. Focus: You're not supposed to be the system."
     }
   },
   "sample_content": {
@@ -120,6 +176,10 @@
       {
         "caption": "We're the team your backend has been waiting for.\nFunnels. Emails. Systems. Automation.\nAll the stuff that makes your brain say 'ugh' - we live for it.\nWe clean up the chaos so your business stops feeling like a never-ending to-do list.\nAveba Digital = systems with flavor.",
         "pillar": "recognition"
+      },
+      {
+        "caption": "You're not tired because you hate your job.\nYou're tired because every task feels like a repeat.\nCopy-pasting the same link.\nRewriting the same reply.\nManually reminding clients for the 3rd time.\nYou didn't sign up for this.\nAnd no, you're not just 'bad at systems.'\nYou've just outgrown the way you've been operating.",
+        "pillar": "realignment"
       }
     ],
     "maxiemizer": [
@@ -130,7 +190,29 @@
       {
         "caption": "You're not behind because you lack discipline.\nYou're behind because you're doing too much manually.\nThe truth is - most service providers are not disorganized.\nThey're just tired of remembering everything on their own.\nMaxiemizer gives your business the structure it's been faking.",
         "pillar": "solution"
+      },
+      {
+        "caption": "You've carried your business with so much heart.\nYou've shown up on hard days.\nYou've figured things out when no one else could.\nBut just because you can do everything...\nDoesn't mean you have to.\nLet Maxiemizer hold the parts that wear you down.\nYou deserve to lead from overflow - not survival mode.",
+        "pillar": "relationship"
       }
+    ]
+  },
+  "shared_principles": {
+    "tone_guide": "Confident but chill. We're not stiff, but we're not trying hard to be funny either. Direct, smart, slightly side-eye but never mean. We write like the smart friend who gives great advice without making you feel dumb.",
+    "formatting": {
+      "use_line_breaks": "For rhythm. No long paragraphs.",
+      "structure": "Start strong. End stronger.",
+      "repetition": "Use for impact (e.g. 'You follow up. You send the link. You remind them again.')",
+      "editing": "When in doubt, cut the fluff."
+    },
+    "never_use": [
+      "Em-dashes",
+      "Emojis", 
+      "Real talk",
+      "Here's the thing",
+      "Backend fixers",
+      "Chaos organizers",
+      "Generic advice"
     ]
   }
 }
