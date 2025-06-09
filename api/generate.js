@@ -61,25 +61,25 @@ Additional context: ${additional || 'None'}
 Your tone = smart, witty, Taglish-coded but English-first, confident but never stiff. Be specific. Use line breaks. Start strong, end stronger. Make people feel seen. Avoid fluff.
 `;
 
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': process.env.ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01'
+      'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
     },
     body: JSON.stringify({
-      model: 'claude-3-sonnet-20240229',
-      max_tokens: 1000,
+      model: 'gpt-4',
       messages: [{
         role: 'user',
         content: prompt
-      }]
+      }],
+      max_tokens: 1000,
+      temperature: 0.7
     })
   });
 
   const data = await response.json();
-  return data.content?.[0]?.text || "Error: No content returned.";
+  return data.choices?.[0]?.message?.content || "Error: No content returned.";
 }
 
 // Function to generate Maxiemizer content using OpenAI
@@ -93,7 +93,7 @@ async function generateMaxiemizerContent(platform, angle, topic, additional) {
   const phrases = voice.phrases_to_use.join(", ");
 
   const prompt = `
-You are creating content for MAXIEMIZER, a CRM system for Filipino service providers, architects, and builders.
+You are writing social media content for MAXIEMIZER, a CRM system built for Filipino builders, service providers, and architects.
 
 ### BRAND VOICE
 Tone: ${voice.tone}
@@ -115,7 +115,8 @@ Angle: ${angleData.definition || angle}
 Topic: ${topic}
 Additional context: ${additional || 'None'}
 
-Your tone = clear, calm, supportive. Like the organized friend who gets you. Break lines for rhythm. Start strong. End stronger. Make the reader feel supported, not overwhelmed.
+Your tone = calm, supportive, clear. Like Maxie — the organized friend who has their stuff together but never makes you feel bad about it. Focus on what the system does for their mental load, time, and energy.
+Use short lines, no fluff, no emojis. Start strong. End stronger.
 `;
 
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -130,7 +131,7 @@ Your tone = clear, calm, supportive. Like the organized friend who gets you. Bre
         role: 'user',
         content: prompt
       }],
-      max_tokens: 800,
+      max_tokens: 1000,
       temperature: 0.7
     })
   });
