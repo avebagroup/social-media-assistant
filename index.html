@@ -410,22 +410,32 @@
         </div>
     </div>
 
-    <script>
+   <script>
+    // Load brand knowledge base
+    let brandKnowledge = null;
+
+    // Load knowledge base when page loads
+    async function loadBrandKnowledge() {
+        try {
+            const response = await fetch('./brand-knowledge.json');
+            brandKnowledge = await response.json();
+            console.log('Brand knowledge loaded successfully');
+        } catch (error) {
+            console.error('Failed to load brand knowledge:', error);
+            // Fallback to basic functionality if knowledge base fails
+        }
+    }
+
     function switchTab(brand) {
-        // Hide all tab contents
         document.querySelectorAll('.tab-content').forEach(content => {
             content.classList.remove('active');
         });
         
-        // Remove active class from all tabs
         document.querySelectorAll('.tab').forEach(tab => {
             tab.classList.remove('active');
         });
         
-        // Show selected tab content
         document.getElementById(brand).classList.add('active');
-        
-        // Add active class to clicked tab
         event.target.classList.add('active');
     }
 
@@ -433,46 +443,40 @@
         event.preventDefault();
         
         const platform = document.getElementById(`${brand}-platform`).value;
-        const pillarOrAngle = document.getElementById(`${brand}-pillar`) ? 
-            document.getElementById(`${brand}-pillar`).value : 
-            document.getElementById(`${brand}-angle`).value;
+        let pillarOrAngle;
+        
+        // Handle different field names for different brands
+        if (brand === 'aveba') {
+            pillarOrAngle = document.getElementById(`${brand}-pillar`).value;
+        } else if (brand === 'maxiemizer') {
+            pillarOrAngle = document.getElementById(`${brand}-angle`).value;
+        }
+
+        // Make sure we got a value
+        if (!pillarOrAngle) {
+            alert('Please select a content pillar/angle');
+            return;
+        }
+
         const topic = document.getElementById(`${brand}-topic`).value;
         const additional = document.getElementById(`${brand}-additional`).value;
         
         // Show loading state
         const generateBtn = event.target.querySelector('button[type="submit"]') || event.target;
         const originalText = generateBtn.textContent;
-        generateBtn.textContent = 'Generating with AI...';
+        generateBtn.textContent = 'AI is thinking...';
         generateBtn.disabled = true;
         
         try {
-            // Call your AI API
-            const response = await fetch('/api/generate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    brand,
-                    platform,
-                    pillar: pillarOrAngle,
-                    topic,
-                    additional
-                })
-            });
-            
-            if (!response.ok) {
-                throw new Error('Failed to generate content');
+            let content;
+            if (brandKnowledge) {
+                content = await generateWithKnowledgeBase(brand, platform, pillarOrAngle, topic, additional);
+            } else {
+                content = generateFallbackContent(brand, platform, pillarOrAngle, topic, additional);
             }
             
-            const data = await response.json();
-            
-            // Display the AI-generated content
-            document.getElementById(`${brand}-content`).textContent = data.content;
+            document.getElementById(`${brand}-content`).textContent = content;
             document.getElementById(`${brand}-output`).style.display = 'block';
-            
-            // Save to database
-            await saveContent(brand, platform, pillarOrAngle, topic, data.content);
             
         } catch (error) {
             console.error('Error:', error);
@@ -480,32 +484,218 @@
                 'Sorry, there was an error generating content. Please try again.';
             document.getElementById(`${brand}-output`).style.display = 'block';
         } finally {
-            // Restore button
             generateBtn.textContent = originalText;
             generateBtn.disabled = false;
         }
     }
 
-    async function saveContent(brand, platform, pillar, topic, content) {
-        try {
-            await fetch('/api/save-content', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    brand,
-                    platform,
-                    pillar,
-                    topic,
-                    content,
-                    userEmail: 'team@aveba.com' // You can make this dynamic later
-                })
-            });
-        } catch (error) {
-            console.error('Error saving content:', error);
-            // Don't show error to user, just log it
+    async function generateWithKnowledgeBase(brand, platform, pillarOrAngle, topic, additional) {
+        const brandData = brandKnowledge[brand];
+        
+        // Create enhanced prompt using actual brand knowledge
+        const prompt = createEnhancedPrompt(brand, platform, pillarOrAngle, topic, additional, brandData);
+        
+        // For now, since we don't have AI APIs set up yet, 
+        // we'll create smart templates using the knowledge base
+        return createSmartTemplate(brand, platform, pillarOrAngle, topic, additional, brandData);
+    }
+
+    function createEnhancedPrompt(brand, platform, pillarOrAngle, topic, additional, brandData) {
+        const voice = brandData.brand_voice;
+        const examples = brandData.sample_content[brand] || [];
+        
+        let prompt = `You are creating ${platform} content for ${brand.toUpperCase()}.
+
+BRAND VOICE: ${voice.tone}
+
+STRICT STYLE RULES:
+${voice.style_rules.map(rule => `- ${rule}`).join('\n')}
+
+BRAND PHRASES TO USE:
+${voice.phrases_to_use.map(phrase => `- "${phrase}"`).join('\n')}
+
+VOICE EXAMPLES:
+${voice.voice_examples.map(example => `- "${example}"`).join('\n')}
+
+SAMPLE CONTENT FOR REFERENCE:
+${examples.map(ex => `"${ex.caption}"`).join('\n\n')}
+
+TARGET AUDIENCE: ${brandData.target_audience}
+
+CONTENT REQUEST:
+- Platform: ${platform}
+- ${brand === 'aveba' ? 'Pillar' : 'Angle'}: ${pillarOrAngle}
+- Topic: ${topic}
+- Additional context: ${additional || 'None'}
+
+Create content that matches the exact voice and style shown in the examples. NO emojis, NO em dashes, use regular dashes or periods only.`;
+
+        return prompt;
+    }
+
+    function createSmartTemplate(brand, platform, pillarOrAngle, topic, additional, brandData) {
+        const voice = brandData.brand_voice;
+        const examples = brandData.sample_content[brand];
+        
+        // Create content based on brand knowledge
+        if (brand === 'aveba') {
+            return createAvebaContent(platform, pillarOrAngle, topic, additional, brandData);
+        } else {
+            return createMaxiemizerContent(platform, pillarOrAngle, topic, additional, brandData);
         }
+    }
+
+    function createAvebaContent(platform, pillar, topic, additional, brandData) {
+        const pillarData = brandData.content_pillars[pillar];
+        const voice = brandData.brand_voice;
+        
+        let content = '';
+        
+        // Platform-specific formatting
+        const platformPrefix = platform.includes('instagram') ? 'INSTAGRAM POST' : 
+                              platform === 'tiktok' ? 'TIKTOK SCRIPT' :
+                              platform === 'linkedin' ? 'LINKEDIN POST' :
+                              platform === 'email' ? 'EMAIL CONTENT' : 'SOCIAL MEDIA POST';
+        
+        content += `${platformPrefix} - AVEBA\n`;
+        content += `PILLAR: ${pillar.toUpperCase()}\n`;
+        content += `TOPIC: ${topic}\n\n`;
+        
+        // Generate content based on pillar
+        switch(pillar) {
+            case 'resonance':
+                content += createResonanceContent(topic, voice);
+                break;
+            case 'recognition':
+                content += createRecognitionContent(topic, voice);
+                break;
+            case 'realignment':
+                content += createRealignmentContent(topic, voice);
+                break;
+            case 'rebellion':
+                content += createRebellionContent(topic, voice);
+                break;
+            case 'readiness':
+                content += createReadinessContent(topic, voice);
+                break;
+            default:
+                content += createGenericAvebaContent(topic, voice);
+        }
+        
+        // Add platform-specific elements
+        if (platform.includes('instagram') || platform === 'tiktok') {
+            content += `\n\nHASHTAGS:\n${brandData.hashtags.join(' ')}`;
+        }
+        
+        if (additional) {
+            content += `\n\nADDITIONAL CONTEXT APPLIED:\n${additional}`;
+        }
+        
+        return content;
+    }
+
+    function createResonanceContent(topic, voice) {
+        const starters = [
+            "Still doing this manually?",
+            "Let me guess.",
+            "We've all been there.",
+            "Anyone else tired of this?"
+        ];
+        
+        const connector = [
+            "Your system isn't system-ing.",
+            "But we're not judging. We've been there.",
+            "All the stuff that makes your brain say 'ugh' - we live for it."
+        ];
+        
+        const starter = starters[Math.floor(Math.random() * starters.length)];
+        const connect = connector[Math.floor(Math.random() * connector.length)];
+        
+        return `${starter}\n\n${topic.includes('manual') ? 'The endless cycle of doing everything by hand.' : `The reality of ${topic.toLowerCase()}.`}\n\n${connect}\n\nWe're Aveba. We clean up the chaos so your business stops feeling like a never-ending to-do list.`;
+    }
+
+    function createRecognitionContent(topic, voice) {
+        return `Meet the team behind the systems.\n\nWe're the ones who look at ${topic.toLowerCase()} and say "Let me handle it."\n\nFunnels. Emails. Automation. Backend cleanup.\nAll the stuff that makes your brain say 'ugh' - we live for it.\n\nAveba Digital = systems with flavor.`;
+    }
+
+    function createRealignmentContent(topic, voice) {
+        return `You're not failing at ${topic.toLowerCase()}.\nYour system is.\n\nMost businesses don't struggle because they lack skill.\nThey struggle because they're still doing everything manually.\n\nThe solution isn't working harder.\nIt's working smarter.\n\nThat's where we come in.`;
+    }
+
+    function createRebellionContent(topic, voice) {
+        return `Hot take: ${topic} doesn't have to be boring.\n\nWe're tired of systems that feel like spreadsheets.\nWe're tired of automation that feels robotic.\nWe're tired of backends that have no personality.\n\nAveba Digital = systems with flavor.\nBecause business operations should work for you, not against you.`;
+    }
+
+    function createReadinessContent(topic, voice) {
+        return `Ready to stop ${topic.toLowerCase()} manually?\n\nWe built our systems for teams who are:\n- Tired of the chaos\n- Ready for structure\n- Done with doing everything twice\n\nIf that's you, let's talk.\n\nSlide into our DMs with 'READY'`;
+    }
+
+    function createMaxiemizerContent(platform, angle, topic, additional, brandData) {
+        let content = '';
+        
+        const platformPrefix = platform.includes('instagram') ? 'INSTAGRAM POST' : 
+                              platform === 'tiktok' ? 'TIKTOK SCRIPT' :
+                              platform === 'linkedin' ? 'LINKEDIN POST' :
+                              platform === 'email' ? 'EMAIL CONTENT' : 'SOCIAL MEDIA POST';
+        
+        content += `${platformPrefix} - MAXIEMIZER\n`;
+        content += `ANGLE: ${angle.toUpperCase()}\n`;
+        content += `TOPIC: ${topic}\n\n`;
+        
+        switch(angle) {
+            case 'problem':
+                content += createProblemContent(topic);
+                break;
+            case 'solution':
+                content += createSolutionContent(topic);
+                break;
+            case 'benefits':
+                content += createBenefitsContent(topic);
+                break;
+            case 'social-proof':
+                content += createSocialProofContent(topic);
+                break;
+            default:
+                content += createGenericMaxiemizerContent(topic);
+        }
+        
+        if (platform.includes('instagram') || platform === 'tiktok') {
+            content += `\n\nHASHTAGS:\n${brandData.hashtags.join(' ')}`;
+        }
+        
+        if (additional) {
+            content += `\n\nADDITIONAL CONTEXT APPLIED:\n${additional}`;
+        }
+        
+        return content;
+    }
+
+    function createProblemContent(topic) {
+        return `You're not behind because you lack discipline.\nYou're behind because you're doing too much manually.\n\n${topic} is just one example.\n\nThe truth is - most service providers are not disorganized.\nThey're just tired of remembering everything on their own.\n\nMaxiemizer gives your business the structure it's been faking.`;
+    }
+
+    function createSolutionContent(topic) {
+        return `What if ${topic.toLowerCase()} happened automatically?\n\nMaxiemizer was built for that gap.\n\nThe system that follows through even when you're offline.\nAutomated follow-ups that feel personal.\nProposals that send themselves.\nPayments that process without you.\n\nThe goal isn't just automation. The goal is support that feels effortless.`;
+    }
+
+    function createBenefitsContent(topic) {
+        return `After Maxiemizer:\n\n- No more ${topic.toLowerCase()}\n- No more lost leads\n- No more manual follow-ups\n- No more "Did I send that?"\n\nYour business runs smoother.\nYour clients feel supported.\nYou finally have time to focus on the work you love.\n\nThat's the Maxiemizer difference.`;
+    }
+
+    function createSocialProofContent(topic) {
+        return `Case study: How one team solved ${topic.toLowerCase()}\n\nBefore Maxiemizer:\n- Manual everything\n- Lost leads\n- Constant follow-up stress\n\nAfter Maxiemizer:\n- Automated systems\n- Better client experience\n- More time for actual work\n\nResults speak louder than features.`;
+    }
+
+    function createGenericAvebaContent(topic, voice) {
+        return `${topic} giving you headaches?\n\nWe've been there.\n\nAll the stuff that makes your brain say 'ugh' - we live for it.\n\nAveba Digital = systems with flavor.`;
+    }
+
+    function createGenericMaxiemizerContent(topic) {
+        return `Most businesses struggle with ${topic.toLowerCase()} because they're doing it manually.\n\nMaxiemizer automates the process so you can focus on what matters.\n\nSupport that feels effortless.`;
+    }
+
+    function generateFallbackContent(brand, platform, pillarOrAngle, topic, additional) {
+        return `Content for ${brand} - ${platform}\nTopic: ${topic}\nApproach: ${pillarOrAngle}\n\n[Enhanced AI content would appear here with your exact brand voice]\n\nNote: Loading brand knowledge base...`;
     }
 
     function copyToClipboard(elementId) {
@@ -522,23 +712,7 @@
         });
     }
 
-    // Add content history feature
-    async function loadContentHistory() {
-        try {
-            const response = await fetch('/api/get-history');
-            const history = await response.json();
-            displayHistory(history);
-        } catch (error) {
-            console.error('Error loading history:', error);
-        }
-    }
-
-    function displayHistory(history) {
-        // This will show previous generations - we can add this feature later
-        console.log('Content history loaded:', history);
-    }
-
-    // Auto-save form data as user types (nice UX touch)
+    // Auto-save and load form data
     function saveFormData(brand) {
         const formData = {
             platform: document.getElementById(`${brand}-platform`).value,
@@ -551,7 +725,6 @@
         localStorage.setItem(`${brand}-form-data`, JSON.stringify(formData));
     }
 
-    // Load saved form data when page loads
     function loadFormData(brand) {
         const saved = localStorage.getItem(`${brand}-form-data`);
         if (saved) {
@@ -572,6 +745,10 @@
 
     // Initialize when page loads
     window.addEventListener('load', function() {
+        // Load brand knowledge first
+        loadBrandKnowledge();
+        
+        // Then load saved form data
         loadFormData('aveba');
         loadFormData('maxiemizer');
         
